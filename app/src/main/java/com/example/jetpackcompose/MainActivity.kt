@@ -3,7 +3,9 @@ package com.example.jetpackcompose
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -19,11 +21,9 @@ class MainActivity : ComponentActivity() {
             JetpackComposeTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
-                    modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
-                    //
+                    CreateBizCard()
                 }
             }
         }
@@ -31,14 +31,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun CreateBizCard() {
+    Surface(
+        Modifier
+            .fillMaxWidth()
+            .fillMaxHeight()
+    ) {
+
+    }
 }
 
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     JetpackComposeTheme {
-        Greeting("Android")
+        CreateBizCard()
     }
 }
