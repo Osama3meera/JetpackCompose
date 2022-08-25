@@ -48,6 +48,7 @@ fun CreateBizCard() {
                 .padding(12.dp),
             shape = RoundedCornerShape(corner = CornerSize(15.dp)),
             elevation = 4.dp
+        //
         ) {
 
         }
