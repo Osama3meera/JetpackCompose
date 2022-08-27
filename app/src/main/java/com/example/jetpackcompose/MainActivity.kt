@@ -1,6 +1,7 @@
 package com.example.jetpackcompose
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -64,15 +65,30 @@ fun CreateBizCard() {
 
                 CreateProfileImage()
                 Divider()
-                Text(
-                    text = "Osama Hasan",
-                    modifier = Modifier.fillMaxWidth(),
-                    color = colorResource(id = R.color.purple_500),
-                    textAlign = TextAlign.Center,
-                    fontSize = 40.sp
-                )
+                CreateInfo()
+                Button(
+                    onClick = {
+                        Log.d("Clicked", "CreateBizCard: Clicked")
+                    }) {
+                    Text(text = "Portfolio", style = MaterialTheme.typography.button)
+                }
             }
         }
+    }
+}
+
+@Composable
+private fun CreateInfo() {
+    Column(modifier = Modifier.padding(5.dp)) {
+        Text(
+            text = "Osama Hasan", style = MaterialTheme.typography.h4,
+            color = MaterialTheme.colors.primaryVariant
+        )
+        Text(text = "Android Compose Programmer", modifier = Modifier.padding(3.dp))
+        Text(
+            text = "@themilesCompose", modifier = Modifier.padding(3.dp),
+            style = MaterialTheme.typography.subtitle1
+        )
     }
 }
 
