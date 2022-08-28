@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,7 +41,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             JetpackComposeTheme {
                 MyApp {
-                    Text(text = "Hello Again !!")
+                    TopHeader()
                 }
             }
         }
@@ -59,15 +60,26 @@ fun MyApp(content: @Composable () -> Unit) {
 
 @Preview
 @Composable
-fun TopHeader() {
+fun TopHeader(totalPerPerson: Double = 134.0) {
     Surface(
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp)))
+            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
+        color = Color(0xFFE9D7F7)
     ) {
-        Column() {
-
+        Column(
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(12.dp)
+        ) {
+            val total = "%.2f".format(totalPerPerson)
+            Text(text = "Total Per Person", style = MaterialTheme.typography.h5)
+            Text(
+                text = "$$total",
+                style = MaterialTheme.typography.h4,
+                fontWeight = FontWeight.ExtraBold
+            )
         }
     }
 }
