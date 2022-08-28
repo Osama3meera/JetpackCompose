@@ -20,6 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
@@ -38,11 +39,35 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JetpackComposeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
+                MyApp {
+                    Text(text = "Hello Again !!")
                 }
             }
+        }
+    }
+}
+
+
+@Composable
+fun MyApp(content: @Composable () -> Unit) {
+    Surface(
+        color = MaterialTheme.colors.background
+    ) {
+        content()
+    }
+}
+
+@Preview
+@Composable
+fun TopHeader() {
+    Surface(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(150.dp)
+            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp)))
+    ) {
+        Column() {
+
         }
     }
 }
@@ -51,8 +76,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun DefaultPreview() {
     JetpackComposeTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-
+        MyApp() {
         }
     }
 }
