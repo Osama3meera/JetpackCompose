@@ -38,153 +38,21 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             JetpackComposeTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
-                    color = MaterialTheme.colors.background
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    CreateBizCard()
                 }
             }
         }
     }
 }
 
-@Composable
-fun CreateBizCard() {
-    val buttonClickedState = remember {
-        mutableStateOf(false)
-    }
-    Surface(
-        Modifier
-            .fillMaxWidth()
-            .fillMaxHeight()
-    ) {
-        Card(
-            modifier = Modifier
-                .width(200.dp)
-                .height(390.dp)
-                .padding(12.dp),
-            shape = RoundedCornerShape(corner = CornerSize(15.dp)),
-            elevation = 4.dp
-        ) {
-            Column(
-                modifier = Modifier.height(300.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-
-                CreateProfileImage()
-                Divider()
-                CreateInfo()
-                Button(
-                    onClick = {
-                        buttonClickedState.value = !buttonClickedState.value
-                    }) {
-                    Text(text = "Portfolio", style = MaterialTheme.typography.button)
-                }
-                if (buttonClickedState.value)
-                    Content()
-                else
-                    Box {}
-            }
-        }
-    }
-}
-
-@Preview
-@Composable
-fun Content() {
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(5.dp)
-    ) {
-        Surface(
-            modifier = Modifier
-                .padding(3.dp)
-                .fillMaxSize(),
-            shape = RoundedCornerShape(corner = CornerSize(6.dp)),
-            border = BorderStroke(width = 2.dp, color = Color.LightGray)
-        ) {
-            Portfolio(data = listOf("Project 1", "Project 2", "Project 3", "Project 4"))
-        }
-    }
-}
-
-@Composable
-fun Portfolio(data: List<String>) {
-
-    LazyColumn {
-        items(data) { item ->
-            Card(
-                modifier = Modifier
-                    .padding(13.dp)
-                    .fillMaxWidth(),
-                shape = RectangleShape,
-                elevation = 4.dp
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .background(MaterialTheme.colors.surface)
-                        .padding(7.dp)
-                ) {
-                    CreateProfileImage(modifier = Modifier.size(100.dp))
-                    Column(
-                        modifier = Modifier
-                            .padding(7.dp)
-                            .align(alignment = Alignment.CenterVertically)
-                    ) {
-                        Text(text = item, fontWeight = FontWeight.Bold)
-                        Text(text = "A great project!", style = MaterialTheme.typography.body2)
-                    }
-                }
-            }
-        }
-    }
-}
-
-
-@Composable
-private fun CreateInfo() {
-    Column(modifier = Modifier.padding(5.dp)) {
-        Text(
-            text = "Osama Hasan", style = MaterialTheme.typography.h4,
-            color = MaterialTheme.colors.primaryVariant
-        )
-        Text(text = "Android Compose Programmer", modifier = Modifier.padding(3.dp))
-        Text(
-            text = "@themilesCompose", modifier = Modifier.padding(3.dp),
-            style = MaterialTheme.typography.subtitle1
-        )
-    }
-}
-
-@Composable
-private fun CreateProfileImage(modifier: Modifier = Modifier) {
-    Surface(
-        modifier = modifier
-            .size(150.dp)
-            .padding(5.dp),
-        shape = CircleShape,
-        border = BorderStroke(0.5.dp, Color.LightGray),
-        elevation = 4.dp,
-        color = MaterialTheme.colors.onSurface.copy(alpha = 0.5f)
-    ) {
-        Image(
-            painter = painterResource(id = R.drawable.profile_picture_placeholder),
-            contentDescription = "profile image",
-            modifier = modifier.size(135.dp),
-            contentScale = ContentScale.Crop
-        )
-    }
-}
-
-//@Preview(showBackground = true)
+@Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     JetpackComposeTheme {
-        CreateBizCard()
+        Surface(modifier = Modifier.fillMaxSize()) {
+
+        }
     }
 }
