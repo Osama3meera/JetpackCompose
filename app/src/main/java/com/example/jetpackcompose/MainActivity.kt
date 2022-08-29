@@ -1,7 +1,12 @@
+@file:OptIn(ExperimentalComposeUiApi::class)
+
 package com.example.jetpackcompose
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
+import android.widget.NumberPicker
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
@@ -16,6 +21,9 @@ import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,6 +34,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -38,7 +47,9 @@ import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.jetpackcompose.components.InputField
+import com.example.jetpackcompose.components.showMessage
 import com.example.jetpackcompose.ui.theme.JetpackComposeTheme
+import com.example.jetpackcompose.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +78,6 @@ fun MyApp(content: @Composable () -> Unit) {
     }
 }
 
-@Preview
 @Composable
 fun TopHeader(totalPerPerson: Double = 134.0) {
     Surface(
@@ -93,10 +103,16 @@ fun TopHeader(totalPerPerson: Double = 134.0) {
     }
 }
 
-@OptIn(ExperimentalComposeUiApi::class)
-@Preview
 @Composable
 fun MainContent() {
+    val context = LocalContext.current
+    BillForm() { billAmt ->
+    }
+}
+
+@Composable
+fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) {
+    val context = LocalContext.current
     val totalBillState = remember {
         mutableStateOf("")
     }
@@ -104,6 +120,11 @@ fun MainContent() {
         totalBillState.value.trim().isNotEmpty()
     }
     val keyboardController = LocalSoftwareKeyboardController.current
+
+    val slidePositionState = remember {
+        mutableStateOf(0f)
+    }
+
     Surface(
         modifier = Modifier
             .padding(2.dp)
@@ -112,7 +133,11 @@ fun MainContent() {
         border = BorderStroke(width = 2.dp, color = Color.LightGray)
     ) {
 
-        Column() {
+        Column(
+            modifier = Modifier.padding(6.dp),
+            verticalArrangement = Arrangement.Top,
+            horizontalAlignment = Alignment.Start
+        ) {
             InputField(
                 valueState = totalBillState,
                 labelId = "Enter Bill",
@@ -120,10 +145,68 @@ fun MainContent() {
                 isSingleLine = true,
                 onAction = KeyboardActions {
                     if (!validState) return@KeyboardActions
-                    //Todo - onvaluechanged
+                    onValChange(totalBillState.value.trim())
                     keyboardController?.hide()
                 }
             )
+            //        if (validState) {
+            Row(
+                modifier = Modifier.padding(3.dp),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                Text(
+                    text = "Split",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+
+                Spacer(modifier = Modifier.width(120.dp))
+                Row(
+                    modifier = Modifier.padding(horizontal = 3.dp),
+                    horizontalArrangement = Arrangement.End
+                ) {
+                    RoundIconButton(
+                        imageVector = Icons.Default.Remove,
+                        onClick = { })
+                    Text(
+                        text = "2",
+                        modifier = Modifier
+                            .align(Alignment.CenterVertically)
+                            .padding(start = 9.dp, end = 9.dp)
+                    )
+                    RoundIconButton(
+                        imageVector = Icons.Default.Add,
+                        onClick = { })
+                }
+            }
+
+            // Tip Row
+            Row(
+                modifier = Modifier.padding(horizontal = 3.dp, vertical = 12.dp)
+            ) {
+                Text(
+                    text = "Tip",
+                    modifier = Modifier.align(alignment = Alignment.CenterVertically)
+                )
+                Spacer(modifier = Modifier.width(200.dp))
+                Text(text = "$33.00", modifier = Modifier.align(Alignment.CenterVertically))
+            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(text = "33%")
+                Spacer(modifier = Modifier.height(14.dp))
+                Slider(value = slidePositionState.value,
+                    onValueChange = { newVal ->
+                        slidePositionState.value = newVal
+                        showMessage(context,slidePositionState.value.toString())
+                    })
+            }
+//            } else {
+//                Box() {
+//
+//                }
+//            }
         }
     }
 }
@@ -133,6 +216,10 @@ fun MainContent() {
 fun DefaultPreview() {
     JetpackComposeTheme {
         MyApp() {
+            Column(modifier = Modifier.fillMaxSize()) {
+                TopHeader()
+                MainContent()
+            }
         }
     }
 }

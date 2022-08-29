@@ -1,5 +1,8 @@
 package com.example.jetpackcompose.components
 
+import android.content.Context
+import android.widget.Toast
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -8,7 +11,6 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material.icons.rounded.AttachMoney
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -48,6 +50,13 @@ fun InputField(
             imeAction = imeAction
         ),
         keyboardActions = onAction,
-        modifier = modifier.padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+        modifier = modifier
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth()
     )
+}
+
+
+fun showMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }
