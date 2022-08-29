@@ -2,21 +2,11 @@
 
 package com.example.jetpackcompose
 
-import android.content.Context
 import android.os.Bundle
-import android.util.Log
-import android.widget.NumberPicker
-import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
@@ -32,23 +22,14 @@ import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
-import androidx.compose.ui.res.colorResource
-import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextLayoutInput
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.example.jetpackcompose.components.InputField
-import com.example.jetpackcompose.components.showMessage
 import com.example.jetpackcompose.ui.theme.JetpackComposeTheme
+import com.example.jetpackcompose.utils.calculateTotalTip
 import com.example.jetpackcompose.widgets.RoundIconButton
 
 class MainActivity : ComponentActivity() {
@@ -58,7 +39,6 @@ class MainActivity : ComponentActivity() {
             JetpackComposeTheme {
                 MyApp {
                     Column() {
-                        TopHeader()
                         MainContent()
                     }
 
@@ -84,7 +64,8 @@ fun TopHeader(totalPerPerson: Double = 134.0) {
         modifier = Modifier
             .fillMaxWidth()
             .height(150.dp)
-            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp))),
+            .clip(shape = RoundedCornerShape(corner = CornerSize(12.dp)))
+            .padding(15.dp),
         color = Color(0xFFE9D7F7)
     ) {
         Column(
@@ -125,9 +106,23 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
         mutableStateOf(0f)
     }
 
+    val tipPercentage = (slidePositionState.value * 100).toInt()
+
+    val splitByState = remember {
+        mutableStateOf(1)
+    }
+
+    val range = IntRange(start = 1, endInclusive = 100)
+
+    val tipAmountState = remember {
+        mutableStateOf(0.0)
+    }
+
+    TopHeader()
+
     Surface(
         modifier = Modifier
-            .padding(2.dp)
+            .padding(10.dp)
             .fillMaxWidth(),
         shape = RoundedCornerShape(corner = CornerSize(8.dp)),
         border = BorderStroke(width = 2.dp, color = Color.LightGray)
@@ -166,16 +161,24 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                 ) {
                     RoundIconButton(
                         imageVector = Icons.Default.Remove,
-                        onClick = { })
+                        onClick = {
+                            splitByState.value =
+                                if (splitByState.value > 1) splitByState.value - 1
+                                else 1
+                        })
                     Text(
-                        text = "2",
+                        text = "${splitByState.value}",
                         modifier = Modifier
                             .align(Alignment.CenterVertically)
                             .padding(start = 9.dp, end = 9.dp)
                     )
                     RoundIconButton(
                         imageVector = Icons.Default.Add,
-                        onClick = { })
+                        onClick = {
+                            if (splitByState.value < range.last)
+                                splitByState.value = splitByState.value + 1
+
+                        })
                 }
             }
 
@@ -188,19 +191,33 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
                     modifier = Modifier.align(alignment = Alignment.CenterVertically)
                 )
                 Spacer(modifier = Modifier.width(200.dp))
-                Text(text = "$33.00", modifier = Modifier.align(Alignment.CenterVertically))
+                Text(
+                    text = "$ ${tipAmountState.value}",
+                    modifier = Modifier.align(Alignment.CenterVertically)
+                )
             }
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(text = "33%")
+                Text(text = "$tipPercentage %")
                 Spacer(modifier = Modifier.height(14.dp))
-                Slider(value = slidePositionState.value,
+                Slider(
+                    value = slidePositionState.value,
                     onValueChange = { newVal ->
                         slidePositionState.value = newVal
-                        showMessage(context,slidePositionState.value.toString())
-                    })
+                        tipAmountState.value =
+                            calculateTotalTip(
+                                totalBill = totalBillState.value.toDouble(),
+                                tipPercentage = tipPercentage
+                            )
+                    },
+                    modifier = Modifier.padding(
+                        start = 16.dp,
+                        end = 16.dp
+                    ),
+                    steps = 5
+                )
             }
 //            } else {
 //                Box() {
@@ -211,13 +228,13 @@ fun BillForm(modifier: Modifier = Modifier, onValChange: (String) -> Unit = {}) 
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
     JetpackComposeTheme {
         MyApp() {
             Column(modifier = Modifier.fillMaxSize()) {
-                TopHeader()
                 MainContent()
             }
         }
