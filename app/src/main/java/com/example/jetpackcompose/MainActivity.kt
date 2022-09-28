@@ -37,11 +37,34 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JetpackComposeTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                }
+            MyApp {
+                MainContent()
+            }
+        }
+    }
+}
+
+@Composable
+fun MyApp(content: @Composable () -> Unit) {
+    JetpackComposeTheme {
+        Scaffold(topBar = {
+            TopAppBar(backgroundColor = Color.Magenta, elevation = 5.dp) {
+                Text(text = "Movies")
+            }
+        }) {
+            content()
+        }
+    }
+}
+
+@Composable
+fun MainContent(
+    movieList: List<String> = listOf(
+        "Avatar", "300", "Harry Potter", "Life ")) {
+    Column(modifier = Modifier.padding(12.dp)) {
+        LazyColumn{
+            items(items = movieList){
+                Text(text = it)
             }
         }
     }
@@ -50,9 +73,7 @@ class MainActivity : ComponentActivity() {
 @Preview(showBackground = true)
 @Composable
 fun DefaultPreview() {
-    JetpackComposeTheme {
-        Surface(modifier = Modifier.fillMaxSize()) {
-//
-        }
+    MyApp {
+        MainContent()
     }
 }
