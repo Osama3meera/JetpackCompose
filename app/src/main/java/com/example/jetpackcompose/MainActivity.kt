@@ -15,6 +15,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,12 +62,53 @@ fun MyApp(content: @Composable () -> Unit) {
 @Composable
 fun MainContent(
     movieList: List<String> = listOf(
-        "Avatar", "300", "Harry Potter", "Life ")) {
+        "Avatar",
+        "300",
+        "Harry Potter",
+        "Life",
+        "Happiness...",
+        "Cross the line",
+        "Be Happy...",
+        "Happy Feet"
+    )
+) {
     Column(modifier = Modifier.padding(12.dp)) {
-        LazyColumn{
-            items(items = movieList){
-                Text(text = it)
+        LazyColumn {
+            items(items = movieList) {
+                MovieRow(movie = it){ movie ->
+                    Log.d("TAG", "MainContent: $movie ")
+
+                }
             }
+        }
+    }
+}
+
+@Composable
+fun MovieRow(movie: String, onItemClick: (String) -> Unit = {}) {
+
+    Card(
+        modifier = Modifier
+            .padding(4.dp)
+            .fillMaxWidth()
+            .height(130.dp)
+            .clickable {
+                onItemClick(movie)
+            },
+        shape = RoundedCornerShape(corner = CornerSize(16.dp)), elevation = 6.dp
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Surface(
+                modifier = Modifier
+                    .padding(12.dp)
+                    .size(100.dp), shape = RectangleShape, elevation = 4.dp
+            ) {
+                Icon(imageVector = Icons.Default.AccountBox, contentDescription = "Movie Image")
+            }
+            Text(text = movie)
         }
     }
 }
